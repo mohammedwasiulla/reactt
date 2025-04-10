@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Job Tracker</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body, html {
+        height: 100%;
+        width: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+      }
+
+      #welcome-screen {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: url('/Welcome.jpeg') no-repeat center center/cover;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        text-shadow: 1px 1px 4px black;
+        transition: opacity 1s ease;
+        padding: 0 1rem;
+        z-index: 10;
+      }
+
+      #welcome-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #welcome-screen h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      #welcome-screen p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        max-width: 90%;
+      }
+
+      #welcome-screen button {
+        padding: 12px 24px;
+        font-size: 1rem;
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #welcome-screen button:hover {
+        background-color: #256fce;
+      }
+
+      #root {
+        display: none;
+        height: 100%;
+      }
+
+      /* ✅ Mobile Responsive */
+      @media (max-width: 600px) {
+        #welcome-screen h1 {
+          font-size: 2rem;
+        }
+
+        #welcome-screen p {
+          font-size: 1rem;
+        }
+
+        #welcome-screen button {
+          font-size: 0.9rem;
+          padding: 10px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+      <h1>Welcome to Student Job Tracker</h1>
+      <p>Your all-in-one tool to track job applications smartly.</p>
+      <button onclick="startApp()">Get Started</button>
+    </div>
+
+    <!-- React Root (Initially Hidden) -->
+    <div id="root"></div>
+
+    <!-- Only load React after clicking the button -->
+    <script type="module">
+      window.startApp = function () {
+        const welcome = document.getElementById('welcome-screen');
+        const root = document.getElementById('root');
+    
+        // Fade out welcome screen
+        welcome.classList.add('fade-out');
+    
+        // After fade-out, hide welcome, show React app, and enable scroll
+        setTimeout(() => {
+          welcome.style.display = 'none';
+          root.style.display = 'block';
+    
+          // ✅ Allow scrolling again
+          document.body.style.overflow = 'auto';
+          document.documentElement.style.overflow = 'auto';
+    
+          // ✅ Load React app
+          import('/src/main.jsx');
+        }, 1000);
+      };
+    </script>
+    
+  </body>
+</html>
