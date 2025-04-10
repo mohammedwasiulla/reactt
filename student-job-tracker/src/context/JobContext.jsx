@@ -9,7 +9,8 @@ export const JobProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
 
-  const API_URL = "https://student-job-backend-ob10.onrender.com";
+  const API_URL = "https://student-job-backend-ob10.onrender.com/api/jobs";
+
 
   // Utility: show a message for a few seconds
   const showMessage = (msg) => {
