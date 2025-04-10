@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
-const helmet = require('helmet'); // ✅ Added Helmet
+const helmet = require('helmet');
 require('dotenv').config();
 
 const app = express();
@@ -19,7 +19,11 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:'],
-        connectSrc: ["'self'", 'https://student-job-frontend.onrender.com'], // Replace with your frontend URL
+        connectSrc: [
+          "'self'",
+          'https://student-job-frontend.onrender.com',
+          'https://student-job-backend-ob10.onrender.com' // ✅ Added backend URL
+        ],
       },
     },
   })
@@ -134,6 +138,11 @@ app.delete('/api/jobs/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+// ✅ Root route for Render health check
+app.get('/', (req, res) => {
+  res.send('Backend is running ✅');
 });
 
 // Start the server
