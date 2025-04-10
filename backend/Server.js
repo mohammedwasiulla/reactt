@@ -2,10 +2,28 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
+const helmet = require('helmet'); // ✅ Added Helmet
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// ✅ Helmet middleware with custom CSP
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:'],
+        connectSrc: ["'self'", 'https://student-job-frontend.onrender.com'], // Replace with your frontend URL
+      },
+    },
+  })
+);
 
 // Middleware
 app.use(cors());
@@ -13,44 +31,48 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
 
 // Job Application Schema
-const jobSchema = new mongoose.Schema({
-  company: {
-    type: String,
-    required: true,
-    trim: true
+const jobSchema = new mongoose.Schema(
+  {
+    company: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ['Applied', 'Interview', 'Offer', 'Rejected'],
+      default: 'Applied',
+    },
+    applicationDate: {
+      type: Date,
+      required: true,
+      default: Date.now,
+    },
+    link: {
+      type: String,
+      trim: true,
+    },
+    notes: {
+      type: String,
+      trim: true,
+    },
   },
-  role: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  status: {
-    type: String,
-    required: true,
-    enum: ['Applied', 'Interview', 'Offer', 'Rejected'],
-    default: 'Applied'
-  },
-  applicationDate: {
-    type: Date,
-    required: true,
-    default: Date.now
-  },
-  link: {
-    type: String,
-    trim: true
-  },
-  notes: {
-    type: String,
-    trim: true
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
 const Job = mongoose.model('Job', jobSchema);
 
